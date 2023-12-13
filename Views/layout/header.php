@@ -16,14 +16,14 @@
     <div class="container-fluid bg-gray fixed">
         <nav class="container">
             <ul>
-                <li class="pr-0"><a href=""><img class="mb-min" src="/images/tangerine.png" width="31px" alt=""></li></a>
-                <a class="black" href="">
+                <li class="pr-0"><a href="/"><img class="mb-min" src="/images/tangerine.png" width="31px" alt=""></li></a>
+                <a class="black" href="/">
                     <li class="pl-0"><strong>Kotatsu</strong></li>
                 </a>
             </ul>
             <ul>
-                <li><a class="black" href="">Home</a></li>
-                <li><a class="black" href="">New</a></li>
+                <li><a class="black" href="/">Home</a></li>
+                <li><a class="black" href="/submit">New</a></li>
             </ul>
         </nav>
     </div>
