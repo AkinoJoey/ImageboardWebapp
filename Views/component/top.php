@@ -1,12 +1,10 @@
 <!-- post -->
-<a href="">
-    <article class="mt-3">
-        <input type="text" placeholder="今日何かあった？">
-    </article>
-</a>
+<article class="mt-3">
+    <a href="/submit"><input type="text" placeholder="今日何かあった？"></a>
+</article>
 
 <!-- thread -->
-<article>
+<article class="thread">
     <hgroup>
         <div class="">
             <img src="/images/user_icon.svg" width="40px" alt="">
@@ -17,7 +15,7 @@
             <img class="w-35" src="/images/4.5MB.jpg" alt="">
         </div>
     </hgroup>
-    <a href=""><img src="/images/comment.svg" alt="" title="返信"></a>
+    <a href="#"><img src="/images/comment.svg" alt="" title="返信"></a>
 
     <footer>
         <h2>Comments</h2>
