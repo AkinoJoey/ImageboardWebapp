@@ -70,3 +70,16 @@ footer{
 .mt-3{
     margin-top: 3rem;
 }
+
+.thread:hover{
+    cursor: pointer;
+    border: 1px solid #373737;
+}
+
+.d-none{
+    display: none;
+}
+
+.image-icon:hover{
+    cursor: pointer;
+}
