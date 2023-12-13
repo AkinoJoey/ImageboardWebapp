@@ -4,21 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" href="/images/favicon.ico" sizes="any">
     <title>Kotatsu</title>
 </head>
 
 
 <body>
-    <header class="bg-black-90 fixed w-100 ph3 pv3 pv4-ns ph4-m ph5-l ">
-        <nav class="f6 fw6 tracked flex justify-between items-center">
-            <div>
-                <a href=""><img src="/images/tangerine.png" class="v-mid pb1" width="30px" alt="Kotatsu logo"></a>
-                <a class="link dim white dib mr3" href="">Kotatsu</a>
-            </div>
-            <div>
-                <a class="f6 link dim br1 ba bw2 ph3 pv2 dib white" href="#0">新しい話題 +</a>
-            </div>
+    <div class="container-fluid bg-gray fixed">
+        <nav class="container">
+            <ul>
+                <li class="pr-0"><a href=""><img class="mb-min" src="/images/tangerine.png" width="31px" alt=""></li></a>
+                <a class="black" href="">
+                    <li class="pl-0"><strong>Kotatsu</strong></li>
+                </a>
+            </ul>
+            <ul>
+                <li><a class="black" href="">Home</a></li>
+                <li><a class="black" href="">New</a></li>
+            </ul>
         </nav>
-    </header>
+    </div>
+
+    <main class="container">

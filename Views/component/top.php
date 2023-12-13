@@ -1,68 +1,59 @@
-<div class="flex flex-column items-center pt5 pt6-ns mb4">
-    <!-- post -->
-    <div class="w-100 w-50-ns ba flex items-center mt4">
-        <div class="flex flex-row items-center w-100 h3 p2">
-            <img class="w2 h2 w3-ns h3-ns br-100" src="/images/post.svg" />
-            <input class="input-reset ba b--black-20 pa2 db w-100 mr2" type="text" placeholder="今日何があった？">
+<!-- post -->
+<a href="">
+    <article class="mt-3">
+        <input type="text" placeholder="今日何かあった？">
+    </article>
+</a>
+
+<!-- thread -->
+<article>
+    <hgroup>
+        <div class="">
+            <img src="/images/user_icon.svg" width="40px" alt="">
+            <h2 class="mb-0">title</h2>
         </div>
-    </div>
-
-    <!-- threads -->
-    <div>
-        <!-- post -->
-        <div class="flex items-center flex-column mt4">
-            <article class="flex flex-column hidden ba mh3 w-100 w-50-ns">
-                <h1 class="f4 bg-near-black white mv0 pv2 ph3">今日のご飯</h1>
-                <div class="pa3">
-                    <p class="f6 f5-ns lh-copy">
-                        みかん1個
-                    </p>
-                    <div class="tc">
-                        <!-- <img src="/images/tangerine.png"> -->
-                    </div>
-                </div>
-            </article>
-
-            <!-- comments -->
-            <article class="flex flex-column hidden ba mt1 mh3 w-100 w-50-ns">
-                <h1 class="f4  mv0 pv2 ph3">Comments</h1>
-                <div class="flex items-center flex-column">
-                    <ul class="list pt0 pa3">
-                        <li class="flex items-center lh-copy ph0-l pv2 bt b--black-10">
-                            <img class="w2 h2 w3-ns h3-ns br-100" src="/images/user_icon.svg" />
-                            <div class="pl3 flex-auto">
-                                <span class="f6 db black-70">Medium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLC</span>
-                            </div>
-                        </li>
-                        <li class="flex items-center lh-copy ph0-l pv2 bt b--black-10">
-                            <img class="w2 h2 w3-ns h3-ns br-100" src="/images/user_icon.svg" />
-                            <div class="pl3 flex-auto">
-                                <span class="f6 db black-70"> みかんワロタ</span>
-                            </div>
-                        </li>
-                        <li class="flex items-center lh-copy ph0-l pv2 bt b--black-10">
-                            <img class="w2 h2 w3-ns h3-ns br-100" src="/images/user_icon.svg" />
-                            <div class="pl3 flex-auto">
-                                <span class="f6 db black-70"> LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLC</span>
-                            </div>
-                        </li>
-                        <li class="flex items-center lh-copy ph0-l pv2 bt b--black-10">
-                            <img class="w2 h2 w3-ns h3-ns br-100" src="/images/user_icon.svg" />
-                            <div class="pl3 flex-auto">
-                                <span class="f6 db black-70"> LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCLLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLCC</span>
-                            </div>
-                        </li>
-                        <li class="flex items-center lh-copy ph0-l pv2 bt b--black-10">
-                            <img class="w2 h2 w3-ns h3-ns br-100" src="/images/user_icon.svg" />
-                            <div class="pl3 flex-auto">
-                                <span class="f6 db black-70"> LLCMedium Hexagon, LLCMedium Hexagon, LLCMedium Hexagon, LLC</span>
-                            </div>
-                        </li>
-                    </ul>
-
-                </div>
-            </article>
+        <p>body texbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textbody textt</p>
+        <div class="row center-xs">
+            <img class="w-35" src="/images/4.5MB.jpg" alt="">
         </div>
-    </div>
+    </hgroup>
+    <a href=""><img src="/images/comment.svg" alt="" title="返信"></a>
 
-</div>
+    <footer>
+        <h2>Comments</h2>
+        <div class="mb-3">
+            <div class="row mh-0">
+                <img src="/images/user_icon.svg" alt="">
+                <h4 class="mb-0 ml-4">title</h4>
+            </div>
+            <p>Go to Safari > Settings > Websites > Notifications, and remove or change all sites to not allow Notifications.</p>
+        </div>
+        <div class="mb-3">
+            <div class="row mh-0">
+                <img src="/images/user_icon.svg" alt="">
+                <h4 class="mb-0 ml-4">title</h4>
+            </div>
+            <p>犬ワロタ</p>
+        </div>
+        <div class="mb-3">
+            <div class="row mh-0">
+                <img src="/images/user_icon.svg" alt="">
+                <h4 class="mb-0 ml-4">title</h4>
+            </div>
+            <p>Go to Safari > Settings > Websites > Notifications, and remove or change all sites to not allow Notifications.</p>
+        </div>
+        <div class="mb-3">
+            <div class="row mh-0">
+                <img src="/images/user_icon.svg" alt="">
+                <h4 class="mb-0 ml-4">title</h4>
+            </div>
+            <p>Go to Safari > Settings > Websites > Notifications, and remove or change all sites to not allow Notifications.</p>
+        </div>
+
+        <hr>
+        <a href="">
+            <p class="text-align-center mb-0 mt-1">すべてのコメント</p>
+        </a>
+
+    </footer>
+</article>
