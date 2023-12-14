@@ -1,23 +1,31 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const imageInput = document.getElementById("image-input");
-    const imageIcon = document.getElementById("image-icon");
-    const imagePreview = document.getElementById("image-preview");
+    let threadForm = document.getElementById("thread-form");
 
-    imageIcon.addEventListener("click", function () {
-        imageInput.click();
+    threadForm.addEventListener("submit", (e) => {
+        e.preventDefault();
 
-        let imageFile = imageInput.files[0];
+        let formData = new FormData(threadForm);
 
-        if (imageFile) {
-            let reader = new FileReader();
-            reader.addEventListener('load', () => {
-                imagePreview.innerHTML =
-                    '<img src="' + reader.result + '" alt="投稿された画像">';
-            }, false,
-            );
-            if (file) {
-            reader.readAsDataURL(file);
-            }
-        }
+        fetch("/form/thread", {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (data.success) {
+                    console.log(data.message);
+                    console.log(...formData.entries());
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch((error) => {
+                alert(error);
+            });
     });
 });
