@@ -83,3 +83,11 @@ footer{
 .image-icon:hover{
     cursor: pointer;
 }
+
+textarea{
+    height: 150px;
+}
+
+.mw-6{
+    max-width: 6rem;
+}
