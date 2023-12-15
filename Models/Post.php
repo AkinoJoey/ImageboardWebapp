@@ -9,10 +9,11 @@ class Post implements Model{
     use GenericModel;
 
     public function __construct(
+        private string $content,
+        private ?string $subject,
         private ?int $id = null,
         private ?int $replyToId = null,
-        private ?string $subject = null,
-        private string $content,
+        private ?string $imagePath = null,
         private ?DataTimeStamp $timeStamp = null
     ) {
     }
@@ -35,7 +36,7 @@ class Post implements Model{
     {
         $this->$replyToId = $$replyToId;
     }
-    public function getSubject(): ?int
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
@@ -51,6 +52,14 @@ class Post implements Model{
 
     public function setContent(string $content) : void {
         $this->content = $content;
+    }
+
+    public function getImagePath() : ?string {
+        return $this->imagePath;
+    }
+
+    public function setImagePath(string $imagePath): void{
+        $this->imagePath = $imagePath;
     }
 
     public function getTimeStamp(): ?DataTimeStamp
