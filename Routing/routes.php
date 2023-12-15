@@ -1,5 +1,7 @@
 <?php
 
+use Database\DataAccess\Implementations\PostDAOImpl;
+use Models\Post;
 use Response\Render\HTMLRenderer;
 use Response\Render\JSONRenderer;
 
@@ -7,14 +9,50 @@ return [
     '' => function () : HTMLRenderer {
         return new HTMLRenderer('component/top');
     },
-    'submit' => function () : HTMLRenderer {
-        return new HTMLRenderer('component/submit');
-    },
-    'form/thread' => function () : JSONRenderer {
-        // validation
-        $title = $_POST['title'];
-        $body = $_POST['body'];
+    'submit' => function () : HTMLRenderer | JSONRenderer {
+        if($_SERVER['REQUEST_METHOD'] === 'GET'){
+            return new HTMLRenderer('component/submit');
 
-        return new JSONRenderer(['success'=>true, 'message'=>$title]);
-    }
+        }elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
+            // To:Do validation
+            $title = strlen($_POST['title']) == 0 ? null : $_POST['title'];
+            $body = $_POST['body'];
+
+            $post = new Post($body, $title);
+            $postDao = new PostDAOImpl();
+            $success = $postDao->create($post);
+
+            if (!$success) {
+                throw new Exception('データの作成に失敗しました。');
+            }
+
+            // 画像がある場合の挙動
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                // 画像の情報
+                $tmpPath = $_FILES['image']['tmp_name'];
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $mime = $finfo->file($tmpPath);
+                $extension = explode('/', $mime)[1];
+
+                // ファイル名の作成
+                $id = (string)$post->getId();
+                $createdAt = $post->getTimeStamp()->getCreatedAt();
+                $filename = hash('sha256', $id . $createdAt) . '.' . $extension;
+                $uploadDir =   './uploads/';
+                $subdirectory = substr($filename, 0, 2);
+                $imagePath = $uploadDir .  $subdirectory . '/' . $filename;
+
+                // アップロード先のディレクトリがない場合は作成
+                if (!is_dir(dirname($imagePath))) mkdir(dirname($imagePath), 0755, true);
+                // アップロードにした場合は失敗のメッセージを送る
+                if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => 'アップロードに失敗しました。']);
+                
+                $imagePathFromUploadDir = $subdirectory . '/' . $filename;
+                $post->setImagePath($imagePathFromUploadDir);
+                $postDao->update($post);
+            }
+
+            return new JSONRenderer(['success' => true, 'message' => 'Part updated successfully']);
+        }
+    },
 ];
