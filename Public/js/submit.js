@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let formData = new FormData(threadForm);
 
-        fetch("/form/thread", {
+        fetch("/submit", {
             method: "POST",
             body: formData,
         })
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then((data) => {
                 if (data.success) {
                     console.log(data.message);
-                    console.log(...formData.entries());
+                    console.log(data);
                 } else {
                     alert(data.message);
                 }
