@@ -18,8 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then((data) => {
                 if (data.success) {
-                    console.log(data.message);
-                    console.log(data);
+                    window.location.href = data.url;
                 } else {
                     alert(data.message);
                 }
