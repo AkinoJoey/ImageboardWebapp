@@ -18,7 +18,9 @@ return [
             $title = strlen($_POST['title']) == 0 ? null : $_POST['title'];
             $body = $_POST['body'];
 
-            $post = new Post($body, $title);
+            // ユニークなURLを作成
+            $url = '/thread/' . hash('sha256', uniqid(mt_rand(), true));
+            $post = new Post($body, $title, $url);
             $postDao = new PostDAOImpl();
             $success = $postDao->create($post);
 
@@ -52,7 +54,21 @@ return [
                 $postDao->update($post);
             }
 
-            return new JSONRenderer(['success' => true, 'message' => 'Part updated successfully']);
+            return new JSONRenderer(['success' => true, 'url' => $url]);
         }
+    },
+    'thread' => function () : HTMLRenderer {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+            $postDao = new PostDAOImpl();
+            $post = $postDao->getByUrl($url);
+
+            $title = $post->getSubject();
+            $body = $post->getContent();
+            $imagePath = $post->getImagePath();
+
+            return new HTMLRenderer('component/thread',['title' => $title, 'body' => $body, 'imagePath' => $imagePath]);
+        } 
     },
 ];
