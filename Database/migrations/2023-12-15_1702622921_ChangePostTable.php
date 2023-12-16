@@ -13,6 +13,6 @@ class ChangePostTable implements SchemaMigration
 
     public function down(): array
     {
-        return ["ALTER TABLE posts posts DROP COLUMN image_path;"];
+        return ["ALTER TABLE posts DROP COLUMN image_path;"];
     }
 }
