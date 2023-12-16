@@ -36,7 +36,7 @@ class PostDAOImpl {
 
         $query = 
             <<<SQL
-            INSERT INTO posts(id, reply_to_id, subject, content, image_path) VALUES(?, ?, ?, ?, ?)
+            INSERT INTO posts(id, reply_to_id, subject, content, image_path, url) VALUES(?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE id = ?,
             reply_to_id = VALUES(reply_to_id),
             subject = VALUES(subject),
@@ -46,13 +46,15 @@ class PostDAOImpl {
 
         $result = $mysqli->prepareAndExecute(
             $query,
-            'iisss', 
+            'iissssi', 
             [
                 $postData->getId(),
                 $postData->getReplyToId(),
                 $postData->getSubject(),
                 $postData->getContent(), 
-                $postData->getImagePath()
+                $postData->getImagePath(),
+                $postData->getUrl(),
+                $postData->getId()
             ],
         );
 
@@ -73,9 +75,18 @@ class PostDAOImpl {
             content: $data['content'],
             subject: $data['subject'],
             id: $data['id'],
-            replyToId: $data['replyToId'],
-            imagePath: $data['imagePath'],
+            replyToId: $data['reply_to_id'],
+            imagePath: $data['image_path'],
+            url: $data['url'],
             timeStamp: new DataTimeStamp($data['created_at'], $data['updated_at'])
         );
+    }
+
+    public function getByUrl(string $url): ?Post
+    {
+        $mysqli = DatabaseManager::getMysqliConnection();
+        $post = $mysqli->prepareAndFetchAll("SELECT * FROM posts WHERE url = ?", 's', [$url])[0] ?? null;
+
+        return $post === null ? null : $this->resultToPost($post);
     }
 }
