@@ -1,5 +1,28 @@
-# Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,macos
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,macos
+# Created by https://www.toptal.com/developers/gitignore/api/macos,windows,linux,visualstudiocode,composer
+# Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,linux,visualstudiocode,composer
+
+### Composer ###
+composer.phar
+/vendor/
+
+# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
+# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
+# composer.lock
+
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
 
 ### macOS ###
 # General
@@ -79,10 +102,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+### original ###
+Public/uploads
 .env
 
-### Composer ###
-composer.phar
-/vendor/
-
-# End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,macos
+# End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,visualstudiocode,composer
