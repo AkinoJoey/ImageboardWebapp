@@ -62,6 +62,10 @@ footer{
     text-align: center;
 }
 
+.mt-0{
+    margin-top: 0;
+}
+
 
 .mt-1{
     margin-top: 1rem;
@@ -86,8 +90,15 @@ footer{
 
 textarea{
     height: 150px;
+    max-width: 100%;
 }
 
 .mw-6{
     max-width: 6rem;
+}
+
+#reply-card{
+    #image{
+        margin-bottom: 0 !important;
+    }
 }
