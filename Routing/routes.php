@@ -57,7 +57,7 @@ return [
             return new JSONRenderer(['success' => true, 'url' => $url]);
         }
     },
-    'thread' => function () : HTMLRenderer {
+    'thread' => function () : HTMLRenderer{
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -67,8 +67,55 @@ return [
             $title = $post->getSubject();
             $body = $post->getContent();
             $imagePath = $post->getImagePath();
+            $comments = $postDao->getReplies($post, 0, 0);
 
-            return new HTMLRenderer('component/thread',['title' => $title, 'body' => $body, 'imagePath' => $imagePath]);
-        } 
+            return new HTMLRenderer('component/thread',['title' => $title, 'body' => $body, 'imagePath' => $imagePath, 'comments' => $comments]);
+        }
     },
+    'comment' => function () : JSONRenderer {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // To:Do validation
+            $url = $_POST['url'];
+            $postDao = new PostDAOImpl();
+            $mainPost = $postDao->getByUrl($url);
+            $mainPostId = $mainPost->getId();
+
+            $title = strlen($_POST['title']) == 0 ? null : $_POST['title'];
+            $body = $_POST['body'];
+
+            $commentPost = new Post($body, $title, null, $mainPostId);
+            $success = $postDao->create($commentPost);
+
+            if (!$success) {
+                throw new Exception('データの作成に失敗しました。');
+            }
+
+            // 画像がある場合の挙動
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                // 画像の情報
+                $tmpPath = $_FILES['image']['tmp_name'];
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $mime = $finfo->file($tmpPath);
+                $extension = explode('/', $mime)[1];
+
+                // ファイル名の作成
+                $id = (string)$commentPost->getId();
+                $createdAt = $commentPost->getTimeStamp()->getCreatedAt();
+                $filename = hash('sha256', $id . $createdAt) . '.' . $extension;
+                $uploadDir =   './uploads/';
+                $subdirectory = substr($filename, 0, 2);
+                $imagePath = $uploadDir .  $subdirectory . '/' . $filename;
+
+                // アップロード先のディレクトリがない場合は作成
+                if (!is_dir(dirname($imagePath))) mkdir(dirname($imagePath), 0755, true);
+                // アップロードにした場合は失敗のメッセージを送る
+                if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => 'アップロードに失敗しました。']);
+
+                $imagePathFromUploadDir = $subdirectory . '/' . $filename;
+                $commentPost->setImagePath($imagePathFromUploadDir);
+                $postDao->update($commentPost);
+            }
+            return new JSONRenderer(['success' => true, 'url' => $url]);
+        }
+    }
 ];
