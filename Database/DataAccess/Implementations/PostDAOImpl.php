@@ -82,6 +82,17 @@ class PostDAOImpl {
         );
     }
 
+    private function resultsToPosts(array $results): array
+    {
+        $posts = [];
+
+        foreach ($results as $result) {
+            $posts[] = $this->resultToPost($result);
+        }
+
+        return $posts;
+    }
+
     public function getByUrl(string $url): ?Post
     {
         $mysqli = DatabaseManager::getMysqliConnection();
@@ -89,4 +100,14 @@ class PostDAOImpl {
 
         return $post === null ? null : $this->resultToPost($post);
     }
+
+    public function getReplies(Post $postData, int $offset, int $limit): array{
+        $mysqli = DatabaseManager::getMysqliConnection();
+
+        $query = "SELECT * FROM posts WHERE reply_to_id = ? LIMIT ?, ?";
+
+        $results = $mysqli->prepareAndFetchAll($query, 'iii', [$postData->getId(), $offset, $limit]);
+        return $results === null ? [] : $this->resultsToPosts($results);
+    }
+        
 }
