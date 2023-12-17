@@ -11,9 +11,9 @@ class Post implements Model{
     public function __construct(
         private string $content,
         private ?string $subject,
-        private string $url,
-        private ?int $id = null,
+        private ?string $url,
         private ?int $replyToId = null,
+        private ?int $id = null,
         private ?string $imagePath = null,
         private ?DataTimeStamp $timeStamp = null
     ) {
@@ -73,7 +73,7 @@ class Post implements Model{
         $this->timeStamp = $timeStamp;
     }
 
-    public function getUrl() : string {
+    public function getUrl() : ?string {
         return $this->url;
     }
 
