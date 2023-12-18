@@ -4,10 +4,22 @@ use Database\DataAccess\Implementations\PostDAOImpl;
 use Models\Post;
 use Response\Render\HTMLRenderer;
 use Response\Render\JSONRenderer;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 return [
     '' => function () : HTMLRenderer {
-        return new HTMLRenderer('component/top');
+        $postDao = new PostDAOImpl();
+        $temporaryMax = 200;
+        $allPosts = $postDao->getAllThreads(0, $temporaryMax);
+
+        $allComment = [];
+
+        foreach($allPosts as $post){
+            $allComment[] = $postDao->getReplies($post, 0, 5);
+        }
+
+        return new HTMLRenderer('component/top', ['posts'=> $allPosts, 'allComment'=> $allComment]);
     },
     'submit' => function () : HTMLRenderer | JSONRenderer {
         if($_SERVER['REQUEST_METHOD'] === 'GET'){
@@ -67,9 +79,14 @@ return [
             $title = $post->getSubject();
             $body = $post->getContent();
             $imagePath = $post->getImagePath();
-            $comments = $postDao->getReplies($post, 0, 0);
 
-            return new HTMLRenderer('component/thread',['title' => $title, 'body' => $body, 'imagePath' => $imagePath, 'comments' => $comments]);
+            $createdAt = $post->getTimeStamp()->getCreatedAt();
+            $postedBy = Carbon::parse(($createdAt))->diffForHumans();
+
+            $temporaryMax = 500;
+            $comments = $postDao->getReplies($post, 0, $temporaryMax);
+
+            return new HTMLRenderer('component/thread',['title' => $title, 'body' => $body, 'imagePath' => $imagePath, 'postedBy'=>$postedBy ,'comments' => $comments]);
         }
     },
     'comment' => function () : JSONRenderer {
