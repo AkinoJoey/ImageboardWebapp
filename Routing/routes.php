@@ -5,7 +5,6 @@ use Models\Post;
 use Response\Render\HTMLRenderer;
 use Response\Render\JSONRenderer;
 use Carbon\Carbon;
-use Carbon\CarbonInterface;
 
 return [
     '' => function () : HTMLRenderer {
@@ -16,7 +15,16 @@ return [
         $allComment = [];
 
         foreach($allPosts as $post){
-            $allComment[] = $postDao->getReplies($post, 0, 5);
+            $hasMoreComments = false;
+            $comments = $postDao->getReplies($post, 0, 6);
+
+            if(count($comments) > 5){
+                $hasMoreComments = true;
+                $comments = array_pop($comments);
+            }
+
+            $allComment[] = ['comments' => $comments, 'hasMoreComments' => $hasMoreComments];
+
         }
 
         return new HTMLRenderer('component/top', ['posts'=> $allPosts, 'allComment'=> $allComment]);
