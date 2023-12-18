@@ -6,8 +6,7 @@ use Database\DatabaseManager;
 use Models\Post;
 use Models\DataTimeStamp;
 
-// TO:DO implements PostDAO
-class PostDAOImpl {
+class PostDAOImpl implements PostDAO {
     public function create(Post $postData): bool
     {
         if ($postData->getId() !== null) throw new \Exception('Cannot create a post with an existing ID. id: ' . $postData->getId());
@@ -31,6 +30,12 @@ class PostDAOImpl {
 
         return $this->createOrUpdate($postData);
     }
+
+    public function delete(int $id) : bool {
+        $mysqli = DatabaseManager::getMysqliConnection();
+        return $mysqli->prepareAndExecute("DELETE FROM posts WHERE id = ?", 'i', [$id]);
+    }
+
     public function createOrUpdate(Post $postData): bool{
         $mysqli = DatabaseManager::getMysqliConnection();
 
@@ -99,6 +104,15 @@ class PostDAOImpl {
         $post = $mysqli->prepareAndFetchAll("SELECT * FROM posts WHERE url = ?", 's', [$url])[0] ?? null;
 
         return $post === null ? null : $this->resultToPost($post);
+    }
+
+    public function getAllThreads(int $offset, int $limit): array{
+        $mysqli = DatabaseManager::getMysqliConnection();
+
+        $query = "SELECT * FROM posts WHERE reply_to_id IS NULL ORDER BY created_at DESC LIMIT ?, ?";
+
+        $results = $mysqli->prepareAndFetchAll($query, 'ii', [$offset, $limit]);
+        return $results === null ? [] : $this->resultsToPosts($results);
     }
 
     public function getReplies(Post $postData, int $offset, int $limit): array{
