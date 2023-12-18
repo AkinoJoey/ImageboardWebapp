@@ -35,32 +35,36 @@ use Carbon\Carbon;
         <footer>
             <h2>Comments</h2>
             <?php foreach ($allComment as $comments) : ?>
-                <?php foreach ($comments['comments'] as $comment) : ?>
-                    <?php if ($post->getId() == $comment->getReplyToId()) : ?>
+                <?php for($i = 0; $i < count($comments); $i++ ) : ?>
+                    <?php if ($post->getId() == $comments[$i]->getReplyToId()) : ?>
                         <div class="mb-3">
                             <div class="row mh-0">
                                 <img src="/images/user_icon.svg" alt="user icon">
-                                <small><?= htmlspecialchars(Carbon::parse($comment->getTimeStamp()->getCreatedAt())->diffForHumans()) ?></small>
-                                <h4 class="mb-0 ml-4"><?= $comment->getSubject() ?></h4>
+                                <small><?= htmlspecialchars(Carbon::parse($comments[$i]->getTimeStamp()->getCreatedAt())->diffForHumans()) ?></small>
+                                <h4 class="mb-0 ml-4"><?= $comments[$i]->getSubject() ?></h4>
                             </div>
-                            <p><?= $comment->getContent() ?></p>
+                            <p><?= $comments[$i]->getContent() ?></p>
                             <!-- img -->
-                            <?php if (!is_null($comment->getImagePath())) : ?>
+                            <?php if (!is_null($comments[$i]->getImagePath())) : ?>
                                 <div class="row center-xs">
-                                    <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($comment->getImagePath()) ?>" alt="uploaded image">
+                                    <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($comments[$i]->getImagePath()) ?>" alt="uploaded image">
                                 </div>
                             <?php endif; ?>
                         </div>
+                        <?php 
+                        if (count($comments) > 5 && $i === 4){
+                            echo 
+                                '
+                                    <hr>
+                                    <a>
+                                        <p class="text-align-center mb-0 mt-1">すべてのコメント</p>
+                                    </a>
+                                ';  
+                            break;
+                        }
+                        ?>
                     <?php endif; ?>
-                <?php endforeach ?>
-
-                <?php if ($comments['hasMoreComments']) : ?>
-                        <hr>
-                        <a>
-                            <p class="text-align-center mb-0 mt-1">すべてのコメント</p>
-                        </a>
-                    <?php endif; ?>
-
+                <?php endfor; ?>
             <?php endforeach; ?>
 
         </footer>
