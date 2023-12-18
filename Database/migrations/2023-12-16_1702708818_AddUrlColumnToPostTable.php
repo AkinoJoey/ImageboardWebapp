@@ -4,7 +4,7 @@ namespace Database\Migrations;
 
 use Database\SchemaMigration;
 
-class ChangePostTable implements SchemaMigration
+class AddUrlColumnToPostTable implements SchemaMigration
 {
     public function up(): array
     {
