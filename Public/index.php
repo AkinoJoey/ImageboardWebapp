@@ -3,6 +3,11 @@ set_include_path(get_include_path() . PATH_SEPARATOR . realpath(__DIR__ . '/..')
 spl_autoload_extensions(".php");
 spl_autoload_register();
 
+require 'vendor/autoload.php';
+
+date_default_timezone_set('Asia/Tokyo');
+
+
 if (preg_match('/\.(?:png|jpg|jpeg|gif|js|css|html)$/', $_SERVER["REQUEST_URI"])) {
     return false;
 }
