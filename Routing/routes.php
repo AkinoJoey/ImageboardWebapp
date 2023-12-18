@@ -15,16 +15,8 @@ return [
         $allComment = [];
 
         foreach($allPosts as $post){
-            $hasMoreComments = false;
-            $comments = $postDao->getReplies($post, 0, 6);
-
-            if(count($comments) > 5){
-                $hasMoreComments = true;
-                $comments = array_pop($comments);
-            }
-
-            $allComment[] = ['comments' => $comments, 'hasMoreComments' => $hasMoreComments];
-
+            // 「すべてのコメント」の表示の有無を決めるために、最大6つまで取り出す
+            $allComment[] = $postDao->getReplies($post, 0, 6);
         }
 
         return new HTMLRenderer('component/top', ['posts'=> $allPosts, 'allComment'=> $allComment]);
