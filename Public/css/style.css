@@ -75,6 +75,21 @@ footer{
     margin-top: 3rem;
 }
 
+.thread{
+    position: relative;
+    z-index: 2;
+
+    .expandLink {
+        position: absolute;
+        z-index: 1;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+    }
+}
+
+
 .thread:hover{
     cursor: pointer;
     border: 1px solid #373737;
