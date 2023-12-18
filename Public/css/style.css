@@ -102,3 +102,12 @@ textarea{
         margin-bottom: 0 !important;
     }
 }
+
+.text-decoration-none{
+    text-decoration: none;
+}
+
+
+small{
+    font-size: .75rem;
+}
