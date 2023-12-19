@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 <!-- post -->
 <article class="mt-3">
-    <a href="/submit"><input type="text" placeholder="今日何かあった？"></a>
+    <a href="/submit"><input id="submit-field" type="text" placeholder="今日何かあった？"></a>
 </article>
 
 <!-- thread -->
