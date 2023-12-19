@@ -5,6 +5,7 @@ use Models\Post;
 use Response\Render\HTMLRenderer;
 use Response\Render\JSONRenderer;
 use Carbon\Carbon;
+use Helpers\ValidationHelper;
 
 return [
     '' => function () : HTMLRenderer {
@@ -26,9 +27,28 @@ return [
             return new HTMLRenderer('component/submit');
 
         }elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
-            // To:Do validation
             $title = strlen($_POST['title']) == 0 ? null : $_POST['title'];
             $body = $_POST['body'];
+
+            // validation
+            if(!is_null($title)){
+                $isValidTitle = ValidationHelper::title($title);
+                if ($isValidTitle['success'] == false) return new JSONRenderer($isValidTitle);
+            }
+            $isValidBody = ValidationHelper::body($body, 'main');
+            if ($isValidBody['success'] == false) return new JSONRenderer($isValidBody);
+
+            // 画像がある場合
+            if(isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK){
+                // 画像の情報
+                $tmpPath = $_FILES['image']['tmp_name'];
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $mime = $finfo->file($tmpPath);
+                $byteSize = filesize($tmpPath);
+
+                $isValidImage = ValidationHelper::image($mime, $byteSize);
+                if ($isValidImage['success'] == false) return new JSONRenderer($isValidImage);
+            }
 
             // ユニークなURLを作成
             $url = '/thread/' . hash('sha256', uniqid(mt_rand(), true));
@@ -41,16 +61,12 @@ return [
             }
 
             // 画像がある場合の挙動
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                // 画像の情報
-                $tmpPath = $_FILES['image']['tmp_name'];
-                $finfo = new finfo(FILEINFO_MIME_TYPE);
-                $mime = $finfo->file($tmpPath);
-                $extension = explode('/', $mime)[1];
+            if (isset($mime)) {
 
                 // ファイル名の作成
                 $id = (string)$post->getId();
                 $createdAt = $post->getTimeStamp()->getCreatedAt();
+                $extension = explode('/', $mime)[1];
                 $filename = hash('sha256', $id . $createdAt) . '.' . $extension;
                 $uploadDir =   './uploads/';
                 $subdirectory = substr($filename, 0, 2);
@@ -100,6 +116,30 @@ return [
             $title = strlen($_POST['title']) == 0 ? null : $_POST['title'];
             $body = $_POST['body'];
 
+            // validation
+            if (!is_null($title)) {
+                $isValidTitle = ValidationHelper::title($title);
+                if ($isValidTitle['success'] == false
+                ) return new JSONRenderer($isValidTitle);
+            }
+
+            $isValidBody = ValidationHelper::body($body, 'comment');
+            if ($isValidBody['success'] == false) return new JSONRenderer($isValidBody);
+
+            // 画像がある場合
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                // 画像の情報
+                $tmpPath = $_FILES['image']['tmp_name'];
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $mime = $finfo->file($tmpPath);
+                $byteSize = filesize($tmpPath);
+
+                $isValidImage = ValidationHelper::image($mime, $byteSize);
+                if ($isValidImage['success'] == false
+                ) return new JSONRenderer($isValidImage);
+            }
+
+
             $commentPost = new Post($body, $title, null, $mainPostId);
             $success = $postDao->create($commentPost);
 
@@ -108,16 +148,11 @@ return [
             }
 
             // 画像がある場合の挙動
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                // 画像の情報
-                $tmpPath = $_FILES['image']['tmp_name'];
-                $finfo = new finfo(FILEINFO_MIME_TYPE);
-                $mime = $finfo->file($tmpPath);
-                $extension = explode('/', $mime)[1];
-
+            if (isset($mime)) {
                 // ファイル名の作成
                 $id = (string)$commentPost->getId();
                 $createdAt = $commentPost->getTimeStamp()->getCreatedAt();
+                $extension = explode('/', $mime)[1];
                 $filename = hash('sha256', $id . $createdAt) . '.' . $extension;
                 $uploadDir =   './uploads/';
                 $subdirectory = substr($filename, 0, 2);
