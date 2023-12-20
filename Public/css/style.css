@@ -35,7 +35,8 @@
     background-color: #4c4c4f;
 }
 
-.fixed{
+.sticky-header{
+    z-index: 9999;
     position: fixed;
 }
 
@@ -86,6 +87,10 @@ footer{
         width: 100%;
         top: 0;
         left: 0;
+    }
+    .top-element{
+        z-index: 5;
+        position:relative;
     }
 }
 

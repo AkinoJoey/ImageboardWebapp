@@ -13,7 +13,7 @@
 
 
 <body>
-    <div class="container-fluid bg-gray fixed">
+    <div class="container-fluid bg-gray sticky-header">
         <nav class="container">
             <ul>
                 <li class="pr-0"><a href="/"><img class="mb-min" src="/images/tangerine.png" width="31px" alt=""></li></a>
