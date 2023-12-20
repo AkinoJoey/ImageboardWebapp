@@ -24,18 +24,20 @@ use Carbon\Carbon;
             </div>
             <p><?= htmlspecialchars($post->getContent()) ?></p>
             <?php if (!is_null($post->getImagePath())) : ?>
-                <div class="row center-xs">
-                    <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($post->getImagePath())  ?>" alt="">
+                <div class="row center-xs top-element">
+                    <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($post->getImagePath())  ?>" alt="uploaded image">
                 </div>
             <?php endif; ?>
 
         </hgroup>
-        <img src="/images/comment.svg" alt="" title="返信">
+        <a class="top-element" href="<?= $post->getUrl() ?>">
+            <img src="/images/comment.svg" alt="comment icon" title="返信">
+        </a>
 
         <footer>
             <h2>Comments</h2>
             <?php foreach ($allComment as $comments) : ?>
-                <?php for($i = 0; $i < count($comments); $i++ ) : ?>
+                <?php for ($i = 0; $i < count($comments); $i++) : ?>
                     <?php if ($post->getId() == $comments[$i]->getReplyToId()) : ?>
                         <div class="mb-3">
                             <div class="row mh-0">
@@ -51,18 +53,13 @@ use Carbon\Carbon;
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <?php 
-                        if (count($comments) > 5 && $i === 4){
-                            echo 
-                                '
-                                    <hr>
-                                    <a>
-                                        <p class="text-align-center mb-0 mt-1">すべてのコメント</p>
-                                    </a>
-                                ';  
-                            break;
-                        }
-                        ?>
+                        <?php if(count($comments) > 5 && $i === 4):?>
+                            <hr>
+                            <a href="<?= $post->getUrl() ?>" class="top-element">
+                                <p class="text-align-center mb-0 mt-1">すべてのコメント</p>
+                            </a>
+                            <?php break; ?>
+                        <?php endif; ?>
                     <?php endif; ?>
                 <?php endfor; ?>
             <?php endforeach; ?>
