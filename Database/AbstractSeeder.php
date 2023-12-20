@@ -16,9 +16,11 @@ abstract class AbstractSeeder implements Seeder
     // キーはタイプの文字列で、値はbind_paramの文字列です。
     const AVAILABLE_TYPES = [
         'int' => 'i',
+        '?int' => 'i',
         // PHPのfloatは実際にはdouble型の精度です。
         'float' => 'd',
         'string' => 's',
+        '?string' => 's',
         'DateTime' => 's',
     ];
 
@@ -54,7 +56,21 @@ abstract class AbstractSeeder implements Seeder
 
             // PHPは、値のデータタイプを返すget_debug_type()関数とgettype()関数の両方を提供しています。クラス名でも機能します。https://www.php.net/manual/en/function.get-debug-type.php を参照してください。
             // get_debug_typeはネイティブのPHP 8タイプを返します。例えば、floatsのgettype、gettype(4.5)は、ネイティブのデータタイプ'float'ではなく文字列'double'を返します。
-            if (get_debug_type($value) !== $columnDataType) throw new \InvalidArgumentException(sprintf("Value for %s should be of type %s. Here is the current value: %s", $columnName, $columnDataType, json_encode($value)));
+            $nullableColumnType = mb_substr($columnDataType, 0, 1) === '?';
+            $debugType = get_debug_type($value);
+
+            if ($nullableColumnType && ($debugType !== 'null' && $debugType !== mb_substr($columnDataType, 1))) {
+                throw new \InvalidArgumentException(
+                    sprintf("Value for %s should be of type %s. Here is the current value: %s", $columnName, $columnDataType, json_encode($value))
+                );
+            } elseif (!$nullableColumnType && $debugType !== $columnDataType) {
+                throw new \InvalidArgumentException(
+                    sprintf("Value for %s should be of type %s. Here is the current value: %s", $columnName, $columnDataType, json_encode($value))
+                );
+            }
+
+            
+        
         }
     }
 
