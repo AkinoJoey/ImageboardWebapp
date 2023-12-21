@@ -80,6 +80,10 @@ return [
                 $imagePathFromUploadDir = $subdirectory . '/' . $filename;
                 $post->setImagePath($imagePathFromUploadDir);
                 $postDao->update($post);
+
+                // サムネ用の画像を作成
+                $imagePath  = $post->getImagePath();
+
             }
 
             return new JSONRenderer(['success' => true, 'url' => $url]);
