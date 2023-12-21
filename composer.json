@@ -1,6 +1,7 @@
 {
     "require": {
         "nesbot/carbon": "^2.72",
-        "fakerphp/faker": "^1.23"
+        "fakerphp/faker": "^1.23",
+        "intervention/image": "^3.1"
     }
 }
