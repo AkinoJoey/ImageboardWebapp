@@ -25,8 +25,11 @@ use Carbon\Carbon;
             <p><?= htmlspecialchars($post->getContent()) ?></p>
             <?php if (!is_null($post->getImagePath())) : ?>
                 <div class="row center-xs top-element">
-                    <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($post->getImagePath())  ?>" alt="uploaded image">
+                    <a href="<?= '/uploads/' . $post->getImagePath() ?>">
+                        <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($post->getImagePath())  ?>" alt="uploaded image">
+                    </a>
                 </div>
+
             <?php endif; ?>
 
         </hgroup>
@@ -53,7 +56,7 @@ use Carbon\Carbon;
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <?php if(count($comments) > 5 && $i === 4):?>
+                        <?php if (count($comments) > 5 && $i === 4) : ?>
                             <hr>
                             <a href="<?= $post->getUrl() ?>" class="top-element">
                                 <p class="text-align-center mb-0 mt-1">すべてのコメント</p>
