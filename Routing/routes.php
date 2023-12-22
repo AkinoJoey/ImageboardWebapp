@@ -66,8 +66,9 @@ return [
                 // ファイル名の作成
                 $id = (string)$post->getId();
                 $createdAt = $post->getTimeStamp()->getCreatedAt();
-                $extension = explode('/', $mime)[1];
-                $filename = hash('sha256', $id . $createdAt) . '.' . $extension;
+                $extension = explode('/', $mime)[1];;
+                $hash = hash('sha256', $id . $createdAt);
+                $filename = $hash . '.' . $extension;
                 $uploadDir =   './uploads/';
                 $subdirectory = substr($filename, 0, 2);
                 $imagePath = $uploadDir .  $subdirectory . '/' . $filename;
@@ -75,15 +76,25 @@ return [
                 // アップロード先のディレクトリがない場合は作成
                 if (!is_dir(dirname($imagePath))) mkdir(dirname($imagePath), 0755, true);
                 // アップロードにした場合は失敗のメッセージを送る
-                if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => 'アップロードに失敗しました。']);
+                if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => '画像のアップロードに失敗しました。']);
                 
                 $imagePathFromUploadDir = $subdirectory . '/' . $filename;
                 $post->setImagePath($imagePathFromUploadDir);
                 $postDao->update($post);
 
-                // サムネ用の画像を作成
-                $imagePath  = $post->getImagePath();
+                // サムネ用画像の作成
+                if($extension == 'gif'){
+                    $thumbnailFromUploadDir =  $uploadDir .  $subdirectory . '/' .  $hash . '_thumbnail.jpg';
+                    $command = "magick {$imagePath}[0] -resize 400  {$thumbnailFilename}";
+                }else{
+                    $thumbnailFilename = $uploadDir .  $subdirectory . '/' . $hash . '_thumbnail.' . $extension;
+                    $command = "magick {$imagePath} -resize 400  {$thumbnailFilename}";
+                }
+                
+                if(exec($command) === false) throw new Exception("サムネの作成に失敗しました。{$thumbnailFilename}");
 
+                $post->setThumbnailPath($thu)
+            
             }
 
             return new JSONRenderer(['success' => true, 'url' => $url]);

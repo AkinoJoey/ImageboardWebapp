@@ -25,8 +25,10 @@ use Carbon\Carbon;
             <p><?= htmlspecialchars($post->getContent()) ?></p>
             <?php if (!is_null($post->getImagePath())) : ?>
                 <div class="row center-xs top-element">
-                    <a href="<?= '/uploads/' . $post->getImagePath() ?>">
-                        <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($post->getImagePath())  ?>" alt="uploaded image">
+                    <?php $imagePath =  htmlspecialchars($post->getImagePath()) ?>
+                    <a href="<?= '/uploads/' . $imagePath ?>">
+                        <?php $lastDotPosition = strrpos($imagePath, "."); ?>
+                        <img class="w-35" src="<?= '/uploads/' . substr_replace($imagePath, "_thumbnail", $lastDotPosition, 0);  ?>" alt="uploaded image">
                     </a>
                 </div>
 
