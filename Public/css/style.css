@@ -7,6 +7,10 @@
     padding-left: 0;
 }
 
+.p-0{
+    padding: 0;
+}
+
 .mb-min{
     margin-bottom: 6px;
 }
@@ -138,4 +142,18 @@ small{
     max-height: 512px;
     width: 100%;
     height: auto;
+}
+
+
+.hover-target:hover{
+    background-color: RGB(217 217 223);
+}
+
+.vertical-align-text-bottom{
+    vertical-align: text-bottom;
+}
+
+.circle-radius{
+    border-radius: 5rem;
+    padding: 0.25rem;
 }
