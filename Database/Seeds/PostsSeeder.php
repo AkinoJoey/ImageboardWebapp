@@ -56,33 +56,34 @@ class PostsSeeder extends AbstractSeeder{
             $randomTimeStampCreated = mt_rand($min_year, $max_year);
             $randomTimeStampUpdated = mt_rand($randomTimeStampCreated, $max_year);
 
-            // 50%の確率でnullにする
-            $imagePath = '/Public/images/tangerine.png';
-            $thumbnailPath = $imagePath;
+            $imagePath = 'bf/bfc6a1d034457e10cda64b649409ebbf224c4261b2b445d3acb7e9300dddbde6.jpeg';
+            $thumbnailPath = 'bf/bfc6a1d034457e10cda64b649409ebbf224c4261b2b445d3acb7e9300dddbde6_thumbnail.jpeg';
 
             // id 1から100までメインスレッド
-            $row = [
-                    null,
-                    $faker->realTextBetween(1, 50, 5),
-                    $faker->realTextBetween(160, 1000, 5),
-                    $imagePath,
-                    $thumbnailPath,
-                    '/thread/' . $faker->slug(),
-                    Carbon::createFromTimestamp($randomTimeStampCreated)->toDateTime(),
-                    Carbon::createFromTimestamp($randomTimeStampUpdated)->toDateTime(),
-            ];
-
-            // id 101 から200までコメント
             // $row = [
-            //     $faker->numberBetween(1, 100), //reply to id
-            //     $faker->realTextBetween(1, 20, 5),
-            //     $faker->realTextBetween(20, 140, 5),
-            //     null,
-            //     null,
-            //     null,
-            //     Carbon::createFromTimestamp($randomTimeStampCreated)->toDateTime(),
-            //     Carbon::createFromTimestamp($randomTimeStampUpdated)->toDateTime(),
+            //         null,
+            //         $faker->realTextBetween(1, 50, 5),
+            //         $faker->realTextBetween(160, 1000, 5),
+            //         $imagePath,
+            //         $thumbnailPath,
+            //         '/thread/' . $faker->slug(),
+            //         Carbon::createFromTimestamp($randomTimeStampCreated)->toDateTime(),
+            //         Carbon::createFromTimestamp($randomTimeStampUpdated)->toDateTime(),
             // ];
+
+            $imagePath = 'ab/ab31cded011645c46ded35b9db2a79f7250e7672522b6117cdb58592f498413e.png';
+            $thumbnailPath = 'ab/ab31cded011645c46ded35b9db2a79f7250e7672522b6117cdb58592f498413e_thumbnail.png';
+
+            $row = [
+                $faker->numberBetween(1, 1000), //reply to id
+                $faker->realTextBetween(1, 20, 5),
+                $faker->realTextBetween(20, 140, 5),
+                $imagePath,
+                $thumbnailPath,
+                null,
+                Carbon::createFromTimestamp($randomTimeStampCreated)->toDateTime(),
+                Carbon::createFromTimestamp($randomTimeStampUpdated)->toDateTime(),
+            ];
 
             $data[] = $row;
         }
