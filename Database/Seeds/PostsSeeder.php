@@ -29,6 +29,10 @@ class PostsSeeder extends AbstractSeeder{
         ],
         [
             'data_type' => '?string',
+            'column_name' => 'thumbnail_path'
+        ],
+        [
+            'data_type' => '?string',
             'column_name' => 'url'
         ],
         [
@@ -53,29 +57,32 @@ class PostsSeeder extends AbstractSeeder{
             $randomTimeStampUpdated = mt_rand($randomTimeStampCreated, $max_year);
 
             // 50%の確率でnullにする
-            $image_path = '3c/3c36015067533637fdb8dfd898f3ce6028dba3d89f5ebc393528b8e68ac166bc.jpeg';
+            $imagePath = '/Public/images/tangerine.png';
+            $thumbnailPath = $imagePath;
 
             // id 1から100までメインスレッド
             $row = [
                     null,
                     $faker->realTextBetween(1, 50, 5),
                     $faker->realTextBetween(160, 1000, 5),
-                    $image_path,
+                    $imagePath,
+                    $thumbnailPath,
                     '/thread/' . $faker->slug(),
                     Carbon::createFromTimestamp($randomTimeStampCreated)->toDateTime(),
                     Carbon::createFromTimestamp($randomTimeStampUpdated)->toDateTime(),
             ];
 
             // id 101 から200までコメント
-            $row = [
-                $faker->numberBetween(1, 100), //reply to id
-                $faker->realTextBetween(1, 20, 5),
-                $faker->realTextBetween(20, 140, 5),
-                null,
-                null,
-                Carbon::createFromTimestamp($randomTimeStampCreated)->toDateTime(),
-                Carbon::createFromTimestamp($randomTimeStampUpdated)->toDateTime(),
-            ];
+            // $row = [
+            //     $faker->numberBetween(1, 100), //reply to id
+            //     $faker->realTextBetween(1, 20, 5),
+            //     $faker->realTextBetween(20, 140, 5),
+            //     null,
+            //     null,
+            //     null,
+            //     Carbon::createFromTimestamp($randomTimeStampCreated)->toDateTime(),
+            //     Carbon::createFromTimestamp($randomTimeStampUpdated)->toDateTime(),
+            // ];
 
             $data[] = $row;
         }
