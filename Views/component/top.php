@@ -33,7 +33,7 @@ use Carbon\Carbon;
 
         </hgroup>
         <a class="top-element" href="<?= $post->getUrl() ?>">
-            <img src="/images/comment.svg" alt="comment icon" title="返信">
+            <img class="circle-radius hover-target" src="/images/comment.svg" alt="comment icon" title="返信">
         </a>
 
         <footer>
