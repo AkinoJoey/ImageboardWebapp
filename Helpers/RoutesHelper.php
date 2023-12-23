@@ -9,7 +9,7 @@ use Response\Render\JSONRenderer;
 
 class RoutesHelper {
 
-    public static function saveImageAndThumbnail(Post $post, string $tmpPath, string $mime, PostDao $postDao) : ?JSONRenderer {
+    public static function saveImageAndThumbnail(Post $post, string $tmpPath, string $mime, PostDao $postDao) : array {
         // ファイル名の作成
         $id = (string)$post->getId();
         $createdAt = $post->getTimeStamp()->getCreatedAt();
@@ -23,7 +23,7 @@ class RoutesHelper {
         // アップロード先のディレクトリがない場合は作成
         if (!is_dir(dirname($imagePath))) mkdir(dirname($imagePath), 0755, true);
         // アップロードにした場合は失敗のメッセージを送る
-        if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => '画像のアップロードに失敗しました。']);
+        if (!move_uploaded_file($tmpPath, $imagePath)) return (['success' => false, 'message' => '画像のアップロードに失敗しました。']);
 
         $imagePathFromUploadDir = $subdirectory . '/' . $filename;
         $post->setImagePath($imagePathFromUploadDir);
@@ -37,11 +37,11 @@ class RoutesHelper {
             $command = "magick {$imagePath} -resize '512x512'  {$uploadDir}{$thumbnailPath}";
         }
 
-        if (exec($command) === false) return new JSONRenderer(['success' => false, 'message' => 'エラーが発生しました。']);
+        if (!exec($command)) return (['success' => false, 'message' => 'エラーが発生しました。']);
 
         $post->setThumbnailPath($thumbnailPath);
         $postDao->update($post);
 
-        return null;
+        return ['success' => true];
     }
 }
