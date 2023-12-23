@@ -5,6 +5,7 @@ use Models\Post;
 use Response\Render\HTMLRenderer;
 use Response\Render\JSONRenderer;
 use Carbon\Carbon;
+use Helpers\RoutesHelper;
 use Helpers\ValidationHelper;
 
 return [
@@ -33,13 +34,13 @@ return [
             // validation
             if(!is_null($title)){
                 $isValidTitle = ValidationHelper::title($title);
-                if ($isValidTitle['success'] == false) return new JSONRenderer($isValidTitle);
+                if (!$isValidTitle['success']) return new JSONRenderer($isValidTitle);
             }
             $isValidBody = ValidationHelper::body($body, 'main');
-            if ($isValidBody['success'] == false) return new JSONRenderer($isValidBody);
+            if (!$isValidBody['success']) return new JSONRenderer($isValidBody);
 
             // 画像がある場合
-            if(isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK){
+            if(isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE){                
                 // 画像の情報
                 $tmpPath = $_FILES['image']['tmp_name'];
                 $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -47,7 +48,7 @@ return [
                 $byteSize = filesize($tmpPath);
 
                 $isValidImage = ValidationHelper::image($mime, $byteSize);
-                if ($isValidImage['success'] == false) return new JSONRenderer($isValidImage);
+                if (!$isValidImage['success']) return new JSONRenderer($isValidImage);
             }
 
             // ユニークなURLを作成
@@ -60,41 +61,9 @@ return [
                 throw new Exception('データの作成に失敗しました。');
             }
 
-            // 画像がある場合の挙動
+            // 画像がある場合はディレクトリに保存。サムネも作成。
             if (isset($mime)) {
-
-                // ファイル名の作成
-                $id = (string)$post->getId();
-                $createdAt = $post->getTimeStamp()->getCreatedAt();
-                $extension = explode('/', $mime)[1];;
-                $hash = hash('sha256', $id . $createdAt);
-                $filename = $hash . '.' . $extension;
-                $uploadDir =   './uploads/';
-                $subdirectory = substr($filename, 0, 2);
-                $imagePath = $uploadDir .  $subdirectory . '/' . $filename;
-
-                // アップロード先のディレクトリがない場合は作成
-                if (!is_dir(dirname($imagePath))) mkdir(dirname($imagePath), 0755, true);
-                // アップロードにした場合は失敗のメッセージを送る
-                if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => '画像のアップロードに失敗しました。']);
-                
-                $imagePathFromUploadDir = $subdirectory . '/' . $filename;
-                $post->setImagePath($imagePathFromUploadDir);
-                $postDao->update($post);
-
-                // サムネ用画像の作成
-                if($extension == 'gif'){
-                    $thumbnailFromUploadDir =  $uploadDir .  $subdirectory . '/' .  $hash . '_thumbnail.jpg';
-                    $command = "magick {$imagePath}[0] -resize 400  {$thumbnailFilename}";
-                }else{
-                    $thumbnailFilename = $uploadDir .  $subdirectory . '/' . $hash . '_thumbnail.' . $extension;
-                    $command = "magick {$imagePath} -resize 400  {$thumbnailFilename}";
-                }
-                
-                if(exec($command) === false) throw new Exception("サムネの作成に失敗しました。{$thumbnailFilename}");
-
-                $post->setThumbnailPath($thu)
-            
+                RoutesHelper::saveImageAndThumbnail($post, $tmpPath, $mime, $postDao);
             }
 
             return new JSONRenderer(['success' => true, 'url' => $url]);
@@ -107,22 +76,17 @@ return [
             $postDao = new PostDAOImpl();
             $post = $postDao->getByUrl($url);
 
-            $title = $post->getSubject();
-            $body = $post->getContent();
-            $imagePath = $post->getImagePath();
-
             $createdAt = $post->getTimeStamp()->getCreatedAt();
             $postedBy = Carbon::parse(($createdAt))->diffForHumans();
 
             $temporaryMax = 500;
             $comments = $postDao->getReplies($post, 0, $temporaryMax);
 
-            return new HTMLRenderer('component/thread',['title' => $title, 'body' => $body, 'imagePath' => $imagePath, 'postedBy'=>$postedBy ,'comments' => $comments]);
+            return new HTMLRenderer('component/thread',['post'=> $post,'postedBy'=>$postedBy ,'comments' => $comments]);
         }
     },
     'comment' => function () : JSONRenderer {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // To:Do validation
             $url = $_POST['url'];
             $postDao = new PostDAOImpl();
             $mainPost = $postDao->getByUrl($url);
@@ -134,12 +98,11 @@ return [
             // validation
             if (!is_null($title)) {
                 $isValidTitle = ValidationHelper::title($title);
-                if ($isValidTitle['success'] == false
-                ) return new JSONRenderer($isValidTitle);
+                if (!$isValidTitle['success']) return new JSONRenderer($isValidTitle);
             }
 
             $isValidBody = ValidationHelper::body($body, 'comment');
-            if ($isValidBody['success'] == false) return new JSONRenderer($isValidBody);
+            if (!$isValidBody['success']) return new JSONRenderer($isValidBody);
 
             // 画像がある場合
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -150,10 +113,8 @@ return [
                 $byteSize = filesize($tmpPath);
 
                 $isValidImage = ValidationHelper::image($mime, $byteSize);
-                if ($isValidImage['success'] == false
-                ) return new JSONRenderer($isValidImage);
+                if (!$isValidImage['success']) return new JSONRenderer($isValidImage);
             }
-
 
             $commentPost = new Post($body, $title, null, $mainPostId);
             $success = $postDao->create($commentPost);
@@ -164,24 +125,11 @@ return [
 
             // 画像がある場合の挙動
             if (isset($mime)) {
-                // ファイル名の作成
-                $id = (string)$commentPost->getId();
-                $createdAt = $commentPost->getTimeStamp()->getCreatedAt();
-                $extension = explode('/', $mime)[1];
-                $filename = hash('sha256', $id . $createdAt) . '.' . $extension;
-                $uploadDir =   './uploads/';
-                $subdirectory = substr($filename, 0, 2);
-                $imagePath = $uploadDir .  $subdirectory . '/' . $filename;
-
-                // アップロード先のディレクトリがない場合は作成
-                if (!is_dir(dirname($imagePath))) mkdir(dirname($imagePath), 0755, true);
-                // アップロードにした場合は失敗のメッセージを送る
-                if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => 'アップロードに失敗しました。']);
-
-                $imagePathFromUploadDir = $subdirectory . '/' . $filename;
-                $commentPost->setImagePath($imagePathFromUploadDir);
-                $postDao->update($commentPost);
+                $resultSaveImage = RoutesHelper::saveImageAndThumbnail($commentPost, $tmpPath, $mime, $postDao);
+                if(!$resultSaveImage['success'])return new JSONRenderer($resultSaveImage);
             }
+
+            
             return new JSONRenderer(['success' => true, 'url' => $url]);
         }
     }
