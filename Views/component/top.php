@@ -24,14 +24,11 @@ use Carbon\Carbon;
             </div>
             <p><?= htmlspecialchars($post->getContent()) ?></p>
             <?php if (!is_null($post->getImagePath())) : ?>
-                <div class="row center-xs top-element">
-                    <?php $imagePath =  htmlspecialchars($post->getImagePath()) ?>
-                    <a href="<?= '/uploads/' . $imagePath ?>">
-                        <?php $lastDotPosition = strrpos($imagePath, "."); ?>
-                        <img class="w-35" src="<?= '/uploads/' . substr_replace($imagePath, "_thumbnail", $lastDotPosition, 0);  ?>" alt="uploaded image">
+                <div class="row center-xs">
+                    <a class="top-element" href="<?= '/uploads/' . htmlspecialchars($post->getImagePath()) ?>">
+                        <img class="thumbnail" src="<?= '/uploads/' . htmlspecialchars($post->getThumbnailPath())  ?>" alt="uploaded image">
                     </a>
                 </div>
-
             <?php endif; ?>
 
         </hgroup>
@@ -54,7 +51,9 @@ use Carbon\Carbon;
                             <!-- img -->
                             <?php if (!is_null($comments[$i]->getImagePath())) : ?>
                                 <div class="row center-xs">
-                                    <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($comments[$i]->getImagePath()) ?>" alt="uploaded image">
+                                    <a class="top-element" href="<?= '/uploads/' . htmlspecialchars($comments[$i]->getImagePath()) ?>">
+                                        <img class="thumbnail" src="<?= '/uploads/' . htmlspecialchars($comments[$i]->getThumbnailPath())  ?>" alt="uploaded image">
+                                    </a>
                                 </div>
                             <?php endif; ?>
                         </div>
