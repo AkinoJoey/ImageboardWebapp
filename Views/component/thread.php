@@ -10,16 +10,20 @@ use Carbon\Carbon;
             <img src="/images/user_icon.svg" width="40px" alt="user icon">
             <sup><?= 'Posted by ' . htmlspecialchars($postedBy) ?></sup>
             <!-- title -->
-            <?php if (!is_null($title)) : ?>
-                <h2 class="mb-0"><?= htmlspecialchars($title) ?></h2>
+            <?php if (!is_null($post->getSubject())) : ?>
+                <h2 class="mb-0"><?= htmlspecialchars($post->getSubject()) ?></h2>
             <?php endif; ?>
         </div>
         <!-- body -->
-        <p><?= htmlspecialchars($body) ?></p>
+        <p><?= htmlspecialchars($post->getContent()) ?></p>
         <div class="row center-xs">
             <!-- img -->
-            <?php if (!is_null($imagePath)) : ?>
-                <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($imagePath) ?>" alt="uploaded image">
+            <?php if (!is_null($post->getImagePath())) : ?>
+                <div class="row center-xs">
+                    <a href="<?= '/uploads/' . htmlspecialchars($post->getImagePath()) ?>">
+                        <img class="thumbnail" src="<?= '/uploads/' . htmlspecialchars($post->getThumbnailPath())  ?>" alt="uploaded image">
+                    </a>
+                </div>
             <?php endif; ?>
         </div>
     </hgroup>
@@ -63,7 +67,9 @@ use Carbon\Carbon;
                 <!-- img -->
                 <?php if (!is_null($comment->getImagePath())) : ?>
                     <div class="row center-xs">
-                        <img class="w-35" src="<?= '/uploads/' . htmlspecialchars($comment->getImagePath()) ?>" alt="uploaded image">
+                        <a href="<?= '/uploads/' . htmlspecialchars($comment->getImagePath()) ?>">
+                            <img class="thumbnail" src="<?= '/uploads/' . htmlspecialchars($comment->getThumbnailPath())  ?>" alt="uploaded image">
+                        </a>
                     </div>
                 <?php endif; ?>
             </div>
