@@ -63,7 +63,37 @@ return [
 
             // 画像がある場合はディレクトリに保存。サムネも作成。
             if (isset($mime)) {
-                RoutesHelper::saveImageAndThumbnail($post, $tmpPath, $mime, $postDao);
+                // ファイル名の作成
+                $id = (string)$post->getId();
+                $createdAt = $post->getTimeStamp()->getCreatedAt();
+                $extension = explode('/', $mime)[1];;
+                $hash = hash('sha256', $id . $createdAt);
+                $filename = $hash . '.' . $extension;
+                $uploadDir =   './uploads/';
+                $subdirectory = substr($filename, 0, 2);
+                $imagePath = $uploadDir .  $subdirectory . '/' . $filename;
+
+                // アップロード先のディレクトリがない場合は作成
+                if (!is_dir(dirname($imagePath))) mkdir(dirname($imagePath), 0755, true);
+                // アップロードにした場合は失敗のメッセージを送る
+                if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => '画像のアップロードに失敗しました。']);
+
+                $imagePathFromUploadDir = $subdirectory . '/' . $filename;
+                $post->setImagePath($imagePathFromUploadDir);
+
+                // サムネ用画像の作成
+                if ($extension == 'gif') {
+                    $thumbnailPath =  $subdirectory . '/' .  $hash . '_thumbnail.jpeg';
+                    $command = "magick {$imagePath}[0] -resize '512x512'  {$uploadDir}{$thumbnailPath}";
+                } else {
+                    $thumbnailPath = $subdirectory . '/' . $hash . '_thumbnail.' . $extension;
+                    $command = "magick {$imagePath} -resize '512x512'  {$uploadDir}{$thumbnailPath}";
+                }
+
+                if (exec($command) === false) return new JSONRenderer(['success' => false, 'message' => 'エラーが発生しました。']);
+
+                $post->setThumbnailPath($thumbnailPath);
+                $postDao->update($post);
             }
 
             return new JSONRenderer(['success' => true, 'url' => $url]);
@@ -125,8 +155,37 @@ return [
 
             // 画像がある場合の挙動
             if (isset($mime)) {
-                $resultSaveImage = RoutesHelper::saveImageAndThumbnail($commentPost, $tmpPath, $mime, $postDao);
-                if(!$resultSaveImage['success'])return new JSONRenderer($resultSaveImage);
+                // ファイル名の作成
+                $id = (string)$commentPost->getId();
+                $createdAt = $commentPost->getTimeStamp()->getCreatedAt();
+                $extension = explode('/', $mime)[1];;
+                $hash = hash('sha256', $id . $createdAt);
+                $filename = $hash . '.' . $extension;
+                $uploadDir =   './uploads/';
+                $subdirectory = substr($filename, 0, 2);
+                $imagePath = $uploadDir .  $subdirectory . '/' . $filename;
+
+                // アップロード先のディレクトリがない場合は作成
+                if (!is_dir(dirname($imagePath))) mkdir(dirname($imagePath), 0755, true);
+                // アップロードにした場合は失敗のメッセージを送る
+                if (!move_uploaded_file($tmpPath, $imagePath)) return new JSONRenderer(['success' => false, 'message' => '画像のアップロードに失敗しました。']);
+
+                $imagePathFromUploadDir = $subdirectory . '/' . $filename;
+                $commentPost->setImagePath($imagePathFromUploadDir);
+
+                // サムネ用画像の作成
+                if ($extension == 'gif') {
+                    $thumbnailPath =  $subdirectory . '/' .  $hash . '_thumbnail.jpeg';
+                    $command = "magick {$imagePath}[0] -resize '512x512'  {$uploadDir}{$thumbnailPath}";
+                } else {
+                    $thumbnailPath = $subdirectory . '/' . $hash . '_thumbnail.' . $extension;
+                    $command = "magick {$imagePath} -resize '512x512'  {$uploadDir}{$thumbnailPath}";
+                }
+
+                if (exec($command) === false) return new JSONRenderer(['success' => false, 'message' => 'エラーが発生しました。']);
+
+                $commentPost->setThumbnailPath($thumbnailPath);
+                $postDao->update($commentPost);
             }
 
             
