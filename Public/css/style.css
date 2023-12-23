@@ -131,3 +131,11 @@ textarea{
 small{
     font-size: .75rem;
 }
+
+
+.thumbnail{
+    max-width: 512px;
+    max-height: 512px;
+    width: 100%;
+    height: auto;
+}
