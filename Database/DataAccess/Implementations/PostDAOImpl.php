@@ -41,23 +41,26 @@ class PostDAOImpl implements PostDAO {
 
         $query = 
             <<<SQL
-            INSERT INTO posts(id, reply_to_id, subject, content, image_path, url) VALUES(?, ?, ?, ?, ?, ?)
+            INSERT INTO posts(id, reply_to_id, subject, content, image_path, thumbnail_path ,url) VALUES(?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE id = ?,
             reply_to_id = VALUES(reply_to_id),
             subject = VALUES(subject),
             content = VALUES(content),
-            image_path = VALUES(image_path)
+            image_path = VALUES(image_path),
+            thumbnail_path = VALUES(thumbnail_path),
+            url = VALUES(url)
         SQL;
 
         $result = $mysqli->prepareAndExecute(
             $query,
-            'iissssi', 
+            'iisssssi', 
             [
                 $postData->getId(),
                 $postData->getReplyToId(),
                 $postData->getSubject(),
                 $postData->getContent(), 
                 $postData->getImagePath(),
+                $postData->getThumbnailPath(),
                 $postData->getUrl(),
                 $postData->getId()
             ],
@@ -82,6 +85,7 @@ class PostDAOImpl implements PostDAO {
             id: $data['id'],
             replyToId: $data['reply_to_id'],
             imagePath: $data['image_path'],
+            thumbnailPath: $data['thumbnail_path'],
             url: $data['url'],
             timeStamp: new DataTimeStamp($data['created_at'], $data['updated_at'])
         );
