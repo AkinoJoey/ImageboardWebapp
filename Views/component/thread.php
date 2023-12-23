@@ -58,11 +58,10 @@ use Carbon\Carbon;
                 <div class="row mh-0">
                     <img src="/images/user_icon.svg" alt="user icon">
                     <small><?= htmlspecialchars(Carbon::parse($comment->getTimeStamp()->getCreatedAt())->diffForHumans()) ?></small>
-
-                    <?php if (!is_null($comment->getSubject())) : ?>
-                        <h4 class="mb-0 ml-4"><?= htmlspecialchars($comment->getSubject()) ?></h4>
-                    <?php endif; ?>
                 </div>
+                <?php if (!is_null($comment->getSubject())) : ?>
+                    <h4 class="mb-0"><?= htmlspecialchars($comment->getSubject()) ?></h4>
+                <?php endif; ?>
                 <p><?= $comment->getContent() ?></p>
                 <!-- img -->
                 <?php if (!is_null($comment->getImagePath())) : ?>

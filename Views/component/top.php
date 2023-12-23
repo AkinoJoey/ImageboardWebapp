@@ -45,8 +45,8 @@ use Carbon\Carbon;
                             <div class="row mh-0">
                                 <img src="/images/user_icon.svg" alt="user icon">
                                 <small><?= htmlspecialchars(Carbon::parse($comments[$i]->getTimeStamp()->getCreatedAt())->diffForHumans()) ?></small>
-                                <h4 class="mb-0 ml-4"><?= $comments[$i]->getSubject() ?></h4>
                             </div>
+                            <h4 class="mb-0"><?= $comments[$i]->getSubject() ?></h4>
                             <p><?= $comments[$i]->getContent() ?></p>
                             <!-- img -->
                             <?php if (!is_null($comments[$i]->getImagePath())) : ?>
