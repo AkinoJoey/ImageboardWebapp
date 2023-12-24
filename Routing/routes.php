@@ -83,10 +83,10 @@ return [
                 // サムネ用画像の作成
                 if ($extension == 'gif') {
                     $thumbnailPath =  $subdirectory . '/' .  $hash . '_thumbnail.jpeg';
-                    $command = "magick {$imagePath}[0] -resize '512x512'  {$uploadDir}{$thumbnailPath}";
+                    $command = "convert {$imagePath}[0] -resize '512x512'  {$uploadDir}{$thumbnailPath}";
                 } else {
                     $thumbnailPath = $subdirectory . '/' . $hash . '_thumbnail.' . $extension;
-                    $command = "magick {$imagePath} -resize '512x512'  {$uploadDir}{$thumbnailPath}";
+                    $command = "convert {$imagePath} -resize '512x512'  {$uploadDir}{$thumbnailPath}";
                 }
 
                 if (exec($command) === false) return new JSONRenderer(['success' => false, 'message' => 'エラーが発生しました。']);
@@ -175,10 +175,10 @@ return [
                 // サムネ用画像の作成
                 if ($extension == 'gif') {
                     $thumbnailPath =  $subdirectory . '/' .  $hash . '_thumbnail.jpeg';
-                    $command = "magick {$imagePath}[0] -resize '512x512'  {$uploadDir}{$thumbnailPath}";
+                    $command = "convert {$imagePath}[0] -resize '512x512'  {$uploadDir}{$thumbnailPath}";
                 } else {
                     $thumbnailPath = $subdirectory . '/' . $hash . '_thumbnail.' . $extension;
-                    $command = "magick {$imagePath} -resize '512x512'  {$uploadDir}{$thumbnailPath}";
+                    $command = "convert {$imagePath} -resize '512x512'  {$uploadDir}{$thumbnailPath}";
                 }
 
                 if (exec($command) === false) return new JSONRenderer(['success' => false, 'message' => 'エラーが発生しました。']);
