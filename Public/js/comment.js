@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     let replyForm = document.getElementById("reply-form");
+    const load = document.getElementById('load');
 
     replyForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -7,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let formData = new FormData(replyForm);
         const url = this.location.pathname;
         formData.append('url', url);
+
+        load.open = true;
 
         fetch("/comment", {
             method: "POST",
@@ -20,6 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then((data) => {
                 if (data.success) {
+                    load.open = false;
+                    
                     window.location.href = data.url;
                 } else {
                     alert(data.message);

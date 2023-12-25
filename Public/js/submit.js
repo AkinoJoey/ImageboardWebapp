@@ -1,10 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     let threadForm = document.getElementById("thread-form");
+    const load = document.getElementById('load');
 
     threadForm.addEventListener("submit", (e) => {
         e.preventDefault();
 
         let formData = new FormData(threadForm);
+        load.open = true;
 
         fetch("/submit", {
             method: "POST",
@@ -18,6 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then((data) => {
                 if (data.success) {
+                    load.open = false;
+                    
                     window.location.href = data.url;
                 } else {
                     alert(data.message);

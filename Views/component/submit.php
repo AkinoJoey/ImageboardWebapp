@@ -12,4 +12,8 @@
     </form>
 </article>
 
+<!-- loading -->
+<dialog id="load">
+    <p aria-busy="true"></p>
+</dialog>
 <script src="/js/submit.js"></script>

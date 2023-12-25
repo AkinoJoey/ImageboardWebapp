@@ -77,4 +77,9 @@ use Carbon\Carbon;
     </footer>
 </article>
 
+<!-- loading -->
+<dialog id="load">
+    <p aria-busy="true"></p>
+</dialog>
+
 <script src="/js/comment.js"></script>
