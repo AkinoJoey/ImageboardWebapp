@@ -27,10 +27,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     window.location.href = data.url;
                 } else {
+                    load.open = false;
                     alert(data.message);
                 }
             })
             .catch((error) => {
+                load.open = false;
                 alert(error);
             });
     });
