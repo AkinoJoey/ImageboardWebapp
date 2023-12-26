@@ -52,7 +52,7 @@ Kotatsuはテキストや画像を投稿できるイメージボードWEBアプ�
 
 ## 作成の経緯
 Kotatsuを開発した主な目的は、DAO（データアクセスオブジェクト）を活用したWEBアプリケーションを構築することです。  
-過去には、3層アーキテクチャを学習する一環としてテキスト共有アプリ「Text Snippetter」と、画像共有アプリ「Pix Pocket」を開発しました。  
+過去には、3層アーキテクチャを学習する一環としてテキスト共有アプリ「[Text Snippetter](https://github.com/AkinoJoey/TextSnippetSharingService)」と、画像共有アプリ「[Pix Pocket](https://github.com/AkinoJoey/OnlineImageHostingService)」を開発しました。  
 これらのプロジェクトでは、クエリの実行を担当するDatabaseHelperクラスを作成し、データベースへのアクセスにはmysqliネイティブライブラリを用いてMySQLにクエリを実行していました。  これにより、ルーティングから直接クエリを実行するのではなく、関心の分離と可読性を高めました。
 
 当プロジェクトでは、DatabaseHelperクラスではなくDAOの効果的な利用に焦点を当て、データ層をより抽象化することを目指しました。    
@@ -123,7 +123,7 @@ postDAOImplクラスはこのDatabaseManagerクラスを利用してMySQLイン�
 
 ### ダミーデータ導入システムの構築
 テストと開発の効率向上のために、ダミーデータをテーブルに導入するシステムを構築しました。  
-まず、SeederインターフェースとAbstractSeederクラスを新たに作成しました。  
+まず、SeederインターフェースとAbstractSeederクラスを作成しました。  
 Seederインターフェースではデータベースにデータを挿入するためのseed関数と、行のデータ配列を返すcreateRow関数を定義しました。  
 AbstractSeederは抽象クラスとして、seed関数と各行にテーブルを挿入するinsertRow関数を実装しながら、具象クラスが実装に必要な変数やメソッドを定義しました。  
 
