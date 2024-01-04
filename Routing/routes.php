@@ -5,11 +5,12 @@ use Models\Post;
 use Response\Render\HTMLRenderer;
 use Response\Render\JSONRenderer;
 use Carbon\Carbon;
+use Database\DataAccess\DAOFactory;
 use Helpers\ValidationHelper;
 
 return [
     '' => function () : HTMLRenderer {
-        $postDao = new PostDAOImpl();
+        $postDao = DAOFactory::getPostDAO();
         $temporaryMax = 200;
         $allPosts = $postDao->getAllThreads(0, $temporaryMax);
 
@@ -53,7 +54,7 @@ return [
             // ユニークなURLを作成
             $url = '/thread/' . hash('sha256', uniqid(mt_rand(), true));
             $post = new Post($body, $title, $url);
-            $postDao = new PostDAOImpl();
+            $postDao = DAOFactory::getPostDAO();
             $success = $postDao->create($post);
 
             if (!$success) {
@@ -102,7 +103,7 @@ return [
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-            $postDao = new PostDAOImpl();
+            $postDao = DAOFactory::getPostDAO();
             $post = $postDao->getByUrl($url);
 
             $createdAt = $post->getTimeStamp()->getCreatedAt();
@@ -117,7 +118,7 @@ return [
     'comment' => function () : JSONRenderer {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $url = $_POST['url'];
-            $postDao = new PostDAOImpl();
+            $postDao = DAOFactory::getPostDAO();
             $mainPost = $postDao->getByUrl($url);
             $mainPostId = $mainPost->getId();
 
