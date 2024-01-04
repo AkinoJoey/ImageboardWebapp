@@ -1,8 +1,5 @@
 <?php
-spl_autoload_register(function ($name) {
-    $filepath = __DIR__ . "/" . str_replace('\\', '/', $name) . ".php";
-    require_once $filepath;
-});
+require_once __DIR__ . './vendor/autoload.php';
 
 $commands = include "Commands/registry.php";
 
