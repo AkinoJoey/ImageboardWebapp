@@ -26,4 +26,6 @@ interface PostDAO
      * @return Post[] 本スレッドへの返信であるすべての投稿、つまりreplyToID = $postData->getId()となります。
      */
     public function getReplies(Post $postData, int $offset, int $limit): array;
+
+    public function getByUrl(string $url) :?Post;
 }
