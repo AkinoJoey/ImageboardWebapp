@@ -23,8 +23,7 @@ class SeedDao extends AbstractCommand
     {
         $directoryPath = __DIR__ . '/../../Database/SeedsDao';
 
-        // $files = scandir($directoryPath);
-        $files = ['ThreadsDaoSeeder.php', 'RepliesDaoSeeder'];
+        $files = scandir($directoryPath);
 
         foreach ($files as $file) {
             if (pathinfo($file, PATHINFO_EXTENSION) === 'php') {
@@ -34,12 +33,9 @@ class SeedDao extends AbstractCommand
                 // シードファイルをインクルードします。
                 include_once $directoryPath . '/' . $file;
 
-                // 作成するデータ数は50
                 if (class_exists($className)) {
-                    for ($i = 0; $i < 50; $i++) {
-                        $seeder = new $className();
-                        $seeder->seed();
-                    }
+                    $seeder = new $className();
+                    $seeder->seed();
                 } else throw new \Exception("$className does not exist.");
             }
         }
