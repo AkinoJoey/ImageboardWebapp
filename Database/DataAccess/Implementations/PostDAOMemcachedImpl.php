@@ -82,25 +82,54 @@ class PostDAOMemcachedImpl implements PostDAO{
     }
 
     public function getAllThreads(int $offset, int $limit): array{
-        $memcached = $this->memcached;
-        $keys = $memcached->getAllKeys();
+        $keys = $this->memcached->getAllKeys();
         $postKeys = array_filter($keys, fn ($key) => str_starts_with($key, "Post_"));
 
         $keys = sort($keys, SORT_STRING);
 
         $selectedKeys = array_slice($postKeys, $offset, $limit);
-        $posts = array_map(function ($key) use ($memcached) {
-            $result = $memcached->get($key);
-            return $result ? $this->resultToPost(json_decode($result)) : null;
-        }, $selectedKeys);
+        $posts = [];
+        foreach($selectedKeys as $key){
+            $result = $this->memcached->get($key);
+            $post = $this->resultToPost(json_decode($result, true));
 
-        return array_filter($posts, fn ($post) => $post !== false);
+            if($post->getReplyToId() === null){
+                $posts[] = $post;
+            }
+        }
+
+        return $posts;
     }
 
     public function getReplies(Post $postData, int $offset, int $limit): array{
-        $allThreads = $this->getAllThreads(0, PHP_INT_MAX);
-        $replies = array_filter($allThreads, fn ($post) => $post->getReplyToId() === $postData->getId());
+        $keys = $this->memcached->getAllKeys();
+        $postKeys = array_filter($keys, fn ($key) => str_starts_with($key, "Post_"));
 
-        return array_slice($replies, $offset, $limit);
+        $keys = sort($keys, SORT_STRING);
+
+        $selectedKeys = array_slice($postKeys, $offset, $limit);
+        $replies = [];
+        foreach ($selectedKeys as $key) {
+            $result = $this->memcached->get($key);
+            $post = $this->resultToPost(json_decode($result, true));
+
+            if ($post->getReplyToId() === $postData->getId()) {
+                $replies[] = $post;
+            }
+        }
+
+        return $replies;
+    }
+
+    public function getByUrl(string $url): ?Post{
+        $allThreads = $this->getAllThreads(0, PHP_INT_MAX);
+
+        foreach($allThreads as $thread){
+            if($thread->getUrl() === $url){
+                return $thread;
+            }
+        }
+
+        return null;
     }
 }
