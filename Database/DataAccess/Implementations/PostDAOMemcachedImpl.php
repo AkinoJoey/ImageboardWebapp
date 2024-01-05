@@ -59,8 +59,10 @@ class PostDAOMemcachedImpl implements PostDAO{
         $itemCount = $stats[$firstServerKey]['curr_items'];
 
         $postData->setId($itemCount);
-        $now = (new DateTime())->format('Y-m-d H:i:s');
-        $postData->setTimeStamp(new DataTimeStamp($now, $now));
+        if($postData->getTimeStamp() === null){
+            $now = (new DateTime())->format('Y-m-d H:i:s');
+            $postData->setTimeStamp(new DataTimeStamp($now, $now));
+        }
         return $this->memcached->set("Post_{$postData->getId()}", json_encode($this->postToResult($postData)));
     }
     public function getById(int $id): ?Post{
@@ -85,11 +87,8 @@ class PostDAOMemcachedImpl implements PostDAO{
         $keys = $this->memcached->getAllKeys();
         $postKeys = array_filter($keys, fn ($key) => str_starts_with($key, "Post_"));
 
-        $keys = sort($keys, SORT_STRING);
-
-        $selectedKeys = array_slice($postKeys, $offset, $limit);
         $posts = [];
-        foreach($selectedKeys as $key){
+        foreach($postKeys as $key){
             $result = $this->memcached->get($key);
             $post = $this->resultToPost(json_decode($result, true));
 
@@ -98,18 +97,19 @@ class PostDAOMemcachedImpl implements PostDAO{
             }
         }
 
-        return $posts;
+        // created_atが新しい順にソート
+        usort($posts, fn($a,$b) => $b->getTimeStamp()->getCreatedAt() <=> $a->getTimeStamp()->getCreatedAt());
+        $selectedPosts = array_slice($posts, $offset, $limit);
+
+        return $selectedPosts;
     }
 
     public function getReplies(Post $postData, int $offset, int $limit): array{
         $keys = $this->memcached->getAllKeys();
         $postKeys = array_filter($keys, fn ($key) => str_starts_with($key, "Post_"));
 
-        $keys = sort($keys, SORT_STRING);
-
-        $selectedKeys = array_slice($postKeys, $offset, $limit);
         $replies = [];
-        foreach ($selectedKeys as $key) {
+        foreach ($postKeys as $key) {
             $result = $this->memcached->get($key);
             $post = $this->resultToPost(json_decode($result, true));
 
@@ -118,7 +118,11 @@ class PostDAOMemcachedImpl implements PostDAO{
             }
         }
 
-        return $replies;
+        // created_atが古い順にソート
+        usort($replies, fn ($a, $b) => $a->getTimeStamp()->getCreatedAt() <=> $b->getTimeStamp()->getCreatedAt());
+        $selectedReplies = array_slice($replies, $offset, $limit);
+
+        return $selectedReplies;
     }
 
     public function getByUrl(string $url): ?Post{
